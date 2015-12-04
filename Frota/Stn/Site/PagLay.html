@@ -8,15 +8,24 @@
     <meta name="author" content="">
     <title>Satélite Norte</title>
     <script>
-        function redireciona(lcNmPagi, lcTiPagi, lcDcPagi) {
-            //myApp.showIndicator();
+        function redireciona(lcNmPagi, lcTiPagi, lcStPagi, lcWkImge) {
             $("#divPagi").load(lcNmPagi);
-            //poDvTitu.innerHTML = lcTiPagi;
-            //myApp.hideIndicator();
+            poH1Titu.innerHTML = lcTiPagi;
+            poSpSubt.innerHTML = lcStPagi;
+            poHdImge.style.backgroundImage = "url( 'img/" + lcWkImge + "' )";
         }
     </script>
+    <style>
+        #imgCrgd {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+        }
+    </style>
 </head>
 <body>
+    <img src="img/carregando.gif" id="imgCrgd" style="display:none" />
+
     <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
         <div class="container-fluid">
             <div class="navbar-header page-scroll">
@@ -32,7 +41,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="#" onclick="redireciona('RasCar.html', 'Rastreamento de Carga', 'Rastreie sua carga agora mesmo');">RASTREAMENTO DE CARGA</a>
+                        <a href="#" onclick="redireciona('RasCar.html', 'Rastreamento de Carga', 'Rastreie sua carga agora mesmo', 'home-bg.jpg');">RASTREAMENTO DE CARGA</a>
                     </li>
                     <li>
                         <a href="#" onclick="redireciona('CotOnl.html', 'Cotação Online', 'Cote você mesmo o que deseja enviar');">COTAÇÃO ONLINE</a>
@@ -45,44 +54,28 @@
         </div>
     </nav>
 
-    <header class="intro-header" style="background-image: url('img/home-bg.jpg')">
+    <header id="hdrImge" class="intro-header">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="site-heading">
-                        <h1>Rastreamento de Carga</h1>
+                        <h1 id="hd1Titu"></h1>
                         <hr class="small">
-                        <span class="subheading">Rastreie sua carga agora mesmo</span>
+                        <span id="spnSubt" class="subheading"></span>
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <div id="divPagi" class="container">
-        <!--<div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="post-preview">
-                    <a href="post.html">
-                        <h2 class="post-title">
-                            Man must explore, and this is exploration at its greatest
-                        </h2>
-                        <h3 class="post-subtitle">
-                            Problems look mighty small from 150 miles up
-                        </h3>
-                    </a>
-                    <p class="post-meta">Posted by <a href="#">Start Bootstrap</a> on September 24, 2014</p>
-                </div>
-                <hr>
+    <div class="container">
+        <div class="row">
+            <div id="divPagi" class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+
             </div>
-        </div>-->
-
-
-
+        </div>
     </div>
-
     <hr>
-
     <footer>
         <div class="container">
             <div class="row">
@@ -100,6 +93,23 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script src="js/clean-blog.min.js"></script>
+    <script>
+        var poH1Titu = document.getElementById("hd1Titu");
+        var poSpSubt = document.getElementById("spnSubt");
+        var poHdImge = document.getElementById("hdrImge");
+
+        $(document).ajaxSend(function (event, request, settings) {
+            $('#imgCrgd').show();
+        });
+
+        $(document).ajaxComplete(function (event, request, settings) {
+            $('#imgCrgd').hide();
+        });
+
+        $(document).ready(function () {
+            redireciona("RasCar.html", "Rastreamento de Carga", "Rastreie sua carga agora mesmo", "home-bg.jpg");
+        });
+    </script>
 </body>
 
 </html>
