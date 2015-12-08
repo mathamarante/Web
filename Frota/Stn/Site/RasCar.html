@@ -1,10 +1,85 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-	<meta charset="utf-8" />
-</head>
-<body>
+﻿<script>
+    function alteraNotaConhecimento() {
+        if (goSlNota.value == "nota") {
+            goNrNota.placeholder = "DIGITE O NÚMERO DA NOTA FISCAL";
+        }
+        else if (goSlNota.value == "conhecimento") {
+            goNrNota.placeholder = "DIGITE O NÚMERO DO CONHECIMENTO";
+        }
+    }
 
-</body>
-</html>
+    function alteraCnpjCpf() {
+        if (goSlCnpj.value == "cnpj") {
+            goTxCnpj.placeholder = "DIGITE O CNPJ";
+        }
+        else if (goSlCnpj.value == "cpf") {
+            goTxCnpj.placeholder = "DIGITE O CPF";
+        }
+    }
+
+    //@ sourceURL=RasCar1.js
+</script>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">RASTREIE SUA CARGA</div>
+    <div class="panel-body">
+        <table style="width: 100%;">
+            <tr>
+                <td colspan="2">
+                    <select class="form-control">
+                        <option>DESTINATÁRIO</option>
+                        <option>REMETENTE</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <select id="sltCnpj" class="form-control" onchange="alteraCnpjCpf();">
+                        <option value="cnpj">CNPJ</option>
+                        <option value="cpf">CPF</option>
+                    </select>
+                </td>
+                <td>
+                    <input id="txtCnpj" type="text" class="form-control" placeholder="DIGITE O CNPJ">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <select id="sltNota" class="form-control" onchange="alteraNotaConhecimento();">
+                        <option value="nota">NOTA FISCAL</option>
+                        <option value="conhecimento">CONHECIMENTO</option>
+                    </select>
+                </td>
+                <td>
+                    <input id="nroNota" type="number" class="form-control" placeholder="DIGITE O NÚMERO DA NOTA FISCAL">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: right;">
+                    <button type="button" class="btn btn-primary" style="border-radius: 4px !important;">RASTREAR</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script>
+    var goSlCnpj = document.getElementById("sltCnpj");
+    var goTxCnpj = document.getElementById("txtCnpj");
+    var goSlNota = document.getElementById("sltNota");
+    var goNrNota = document.getElementById("nroNota");
+</script>
