@@ -10,10 +10,24 @@
 
     function alteraCnpjCpf() {
         if (goSlCnpj.value == "cnpj") {
-            goTxCnpj.placeholder = "DIGITE O CNPJ";
+            goTxCnpj.style.display = "";
+            goTxNcpf.style.display = "none";
         }
         else if (goSlCnpj.value == "cpf") {
-            goTxCnpj.placeholder = "DIGITE O CPF";
+            goTxCnpj.style.display = "none";
+            goTxNcpf.style.display = "";
+        }
+    }
+
+    function rastreiaCarga() {
+        if (sltCnpj.value == "cnpj") {
+            if (txtCnpj.value.trim() == "") {
+                goDvErro.style.display = "";
+                goDvErro.innerHTML = "CNPJ INVÁLIDO";
+            }
+        }
+        else if (goSlCnpj.value == "cpf") {
+
         }
     }
 
@@ -45,7 +59,8 @@
                     </select>
                 </td>
                 <td>
-                    <input id="txtCnpj" type="text" class="form-control" placeholder="DIGITE O CNPJ">
+                    <input id="txtCnpj" type="text" class="form-control maskCnpj" placeholder="DIGITE O CNPJ">
+                    <input id="txtNcpf" type="text" class="form-control maskNcpf" placeholder="DIGITE O CPF" style="display: none;">
                 </td>
             </tr>
             <tr>
@@ -71,15 +86,27 @@
             </tr>
             <tr>
                 <td colspan="2" style="text-align: right;">
-                    <button type="button" class="btn btn-primary" style="border-radius: 4px !important;">RASTREAR</button>
+                    <button id="btnRast" type="button" class="btn btn-primary" style="border-radius: 4px !important;" onclick="rastreiaCarga();" >RASTREAR</button>
                 </td>
             </tr>
         </table>
     </div>
 </div>
+<div id="divErro" class="alert alert-danger" role="alert" style="display: none;"></div>
 <script>
     var goSlCnpj = document.getElementById("sltCnpj");
     var goTxCnpj = document.getElementById("txtCnpj");
+    var goTxNcpf = document.getElementById("txtNcpf");
     var goSlNota = document.getElementById("sltNota");
     var goNrNota = document.getElementById("nroNota");
+    var goDvErro = document.getElementById("divErro");
+
+    $(function ($) {
+        $(".maskCnpj").mask("99.999.999/9999-99");
+        $(".maskNcpf").mask("999.999.999-99");
+    });
+
+    enterTeclado2("txtCnpj", "nroNota");
+    enterTeclado2("txtNcpf", "nroNota");
+    enterTeclado3("nroNota", "btnRast", "btnRast");
 </script>
