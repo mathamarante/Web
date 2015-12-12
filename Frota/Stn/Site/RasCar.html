@@ -1,9 +1,9 @@
 ﻿<script>
     function alteraNotaConhecimento() {
-        if (goSlNota.value == "nota") {
+        if (goSlNota.value == "nf_nume") {
             goNrNota.placeholder = "DIGITE O NÚMERO DA NOTA FISCAL";
         }
-        else if (goSlNota.value == "conhecimento") {
+        else if (goSlNota.value == "ct_nume") {
             goNrNota.placeholder = "DIGITE O NÚMERO DO CONHECIMENTO";
         }
     }
@@ -20,15 +20,28 @@
     }
 
     function rastreiaCarga() {
-        if (sltCnpj.value == "cnpj") {
-            if (txtCnpj.value.trim() == "") {
-                goDvErro.style.display = "";
-                goDvErro.innerHTML = "CNPJ INVÁLIDO";
-            }
+        if (sltCnpj.value == "cnpj" && !validaCnpj(txtCnpj.value)) {
+            goDvErro.style.display = "";
+            goDvErro.innerHTML = "CNPJ INVÁLIDO";
+            return;
         }
-        else if (goSlCnpj.value == "cpf") {
+        else if (goSlCnpj.value == "cpf" && !validaCpf(txtNcpf.value)) {
+            goDvErro.style.display = "";
+            goDvErro.innerHTML = "CPF INVÁLIDO";
+            return;
+        }
 
+        if (goNrNota.value.trim() == "") {
+            goDvErro.style.display = "";
+
+            if (goSlNota.value == "nf_nume") { goDvErro.innerHTML = "NÚMERO DA NOTA FISCAL INVÁLIDO"; }
+            else if (goSlNota.value == "ct_nume") { goDvErro.innerHTML = "NÚMERO DO CONHECIMENTO INVÁLIDO"; }
+
+            return;
         }
+
+        goDvErro.style.display = "none";
+        goDvErro.innerHTML = "";
     }
 
     //@ sourceURL=RasCar1.js
@@ -71,8 +84,8 @@
             <tr>
                 <td>
                     <select id="sltNota" class="form-control" onchange="alteraNotaConhecimento();">
-                        <option value="nota">NOTA FISCAL</option>
-                        <option value="conhecimento">CONHECIMENTO</option>
+                        <option value="nf_nume">NOTA FISCAL</option>
+                        <option value="ct_nume">CONHECIMENTO</option>
                     </select>
                 </td>
                 <td>
@@ -86,7 +99,7 @@
             </tr>
             <tr>
                 <td colspan="2" style="text-align: right;">
-                    <button id="btnRast" type="button" class="btn btn-primary" style="border-radius: 4px !important;" onclick="rastreiaCarga();" >RASTREAR</button>
+                    <button id="btnRast" type="button" class="btn btn-primary" style="border-radius: 4px !important;" onclick="rastreiaCarga();">RASTREAR</button>
                 </td>
             </tr>
         </table>
