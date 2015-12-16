@@ -67,14 +67,7 @@
             </div>
         </div>
     </header>
-
-    <div id="divPagi" class="container">
-        <!--<div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-
-            </div>
-        </div>-->
-    </div>
+    <div id="divPagi" class="container"></div>
     <hr>
     <footer>
         <div class="container">
@@ -99,6 +92,7 @@
         var poH1Titu = document.getElementById("hd1Titu");
         var poSpSubt = document.getElementById("spnSubt");
         var poHdImge = document.getElementById("hdrImge");
+		var pcWsHttp = "http://localhost/VS2013/Frota/Stn/WebService/Application/Service.svc/";
 
         $(document).ajaxSend(function (event, request, settings) {
             $('#imgCrgd').show();
