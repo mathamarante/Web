@@ -115,3 +115,60 @@ function validaCpf(strCPF) {
 
     return true;
 }
+
+function jsonDate(lcJsDate) {
+    if (lcJsDate == null) { return ""; }
+
+    var ldFuDate = new Date(parseInt(lcJsDate.substr(6)));
+    ldFuDate.setHours(0,0,0,0);
+    var lcSqDate = ldFuDate.toISOString().slice(0, 10).replace(/-/g, "");
+    var lcBrDate = lcSqDate.substr(6) + "/" + lcSqDate.substr(4, 2) + "/" + lcSqDate.substr(0, 4);
+
+    return lcBrDate;
+}
+
+function formataCNPJ(lcClCnpj) {
+    if (lcClCnpj.trim() == "") {
+        return "";
+    }
+    else {
+        return lcClCnpj.substring(0, 2) + "." + lcClCnpj.substring(2, 5) + "." + lcClCnpj.substring(5, 8) + "/" + lcClCnpj.substring(8, 12) + "-" + lcClCnpj.substring(12);
+    }
+}
+
+function formataCPF(lcClNcpf) {
+    if (lcClNcpf.trim() == "") {
+        return "";
+    }
+    else {
+        return lcClNcpf.substring(0, 3) + "." + lcClNcpf.substring(3, 6) + "." + lcClNcpf.substring(6, 9) + "-" + lcClNcpf.substring(9);
+    }
+}
+
+function objetoDataParaStringData(ldWkData) {
+    var lnWkDias = ldWkData.getDate(), lnWkMese = ldWkData.getMonth() + 1;
+    var lcWkDias = "", lcWkMese = "", lcWkAnos = ldWkData.getFullYear().toString().trim();
+
+    if (lnWkDias < 10) { lcWkDias = "0" + lnWkDias.toString().trim(); }
+    else { lcWkDias = lnWkDias.toString().trim(); }
+
+    if (lnWkMese < 10) { lcWkMese = "0" + lnWkMese.toString().trim(); }
+    else { lcWkMese = lnWkMese.toString().trim(); }
+
+    return lcWkDias + "/" + lcWkMese + "/" + lcWkAnos;
+}
+
+function addZero(i) {
+    if (i < 10) {
+        i = "0" + i;
+    }
+    return i;
+}
+
+function pegaHora(d) {
+    var h = addZero(d.getHours());
+    var m = addZero(d.getMinutes());
+    var s = addZero(d.getSeconds());
+
+    return h + ":" + m + ":" + s;
+}

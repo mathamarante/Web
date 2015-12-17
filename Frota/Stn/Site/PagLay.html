@@ -17,14 +17,17 @@
     </script>
     <style>
         #imgCrgd {
-            position: absolute;
-            left: 10px;
-            top: 10px;
+            margin: auto;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
         }
     </style>
 </head>
 <body>
-    <img src="img/carregando.gif" id="imgCrgd" style="display:none" />
+    <img src="img/carregando.gif" id="imgCrgd" style="display:none; z-index: 2;" />
 
     <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
         <div class="container-fluid">
@@ -94,11 +97,11 @@
         var poHdImge = document.getElementById("hdrImge");
 		var pcWsHttp = "http://localhost/VS2013/Frota/Stn/WebService/Application/Service.svc/";
 
-        $(document).ajaxSend(function (event, request, settings) {
+		$(document).ajaxSend(function (event, request, settings) {
             $('#imgCrgd').show();
         });
 
-        $(document).ajaxComplete(function (event, request, settings) {
+		$(document).ajaxComplete(function (event, request, settings) {
             $('#imgCrgd').hide();
         });
 
