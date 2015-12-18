@@ -187,9 +187,11 @@
             lcWkRsql += "<div class='row'>";
             lcWkRsql += "<div class='col-xs-4'>" + objetoDataParaStringData(ldCtData) + "</div>";
             lcWkRsql += "<div class='col-xs-4'>" + pegaHora(ldCtData) + "</div>";
-            lcWkRsql += "<div class='col-xs-4'> OBJETO POSTADO </div>";
+            lcWkRsql += "<div class='col-xs-4'> POSTAGEM </div>";
             lcWkRsql += "</div>";
         }
+
+        goTdStat.innerHTML = "OBJETO POSTADO";
 
         try {
             ldMnData = new Date(parseInt(ldMnData.substr(6)));
@@ -201,6 +203,8 @@
                 lcWkRsql += "<div class='col-xs-4'> EM TRÂNSITO </div>";
                 lcWkRsql += "</div>";
             }
+
+            goTdStat.innerHTML = "OBJETO ENCAMINHADO";
         }
         catch (loWkErro) { }
 
@@ -214,6 +218,8 @@
                 lcWkRsql += "<div class='col-xs-4'> DISPONÍVEL PARA RETIRADA </div>";
                 lcWkRsql += "</div>";
             }
+
+            goTdStat.innerHTML = "OBJETO DISPONÍVEL PARA RETIRADA";
         }
         catch (loWkErro) { }
 
@@ -227,6 +233,8 @@
                 lcWkRsql += "<div class='col-xs-4'> ENTREGA </div>";
                 lcWkRsql += "</div>";
             }
+
+            goTdStat.innerHTML = "OBJETO ENTREGUE";
         }
         catch (loWkErro) { }
 
@@ -422,6 +430,11 @@
                     </div>
                 </td>
             </tr>
+            <tr>
+                <td id="ttdStat" colspan="4" style="text-align: center; font-weight: bold;">
+                    
+                </td>
+            </tr>
         </table>
     </div>
 </div>
@@ -443,6 +456,7 @@
     var goSpCgcr = document.getElementById("spnCgcr");
     var goSpNomd = document.getElementById("spnNomd");
     var goSpCgcd = document.getElementById("spnCgcd");
+    var goTdStat = document.getElementById("ttdStat");
 
     $(function ($) {
         $(".maskCnpj").mask("99.999.999/9999-99");
