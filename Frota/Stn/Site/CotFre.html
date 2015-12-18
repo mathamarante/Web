@@ -1,0 +1,48 @@
+﻿<script>
+    function pesquisaEstados() {
+        goSlEsta.disabled = true;
+
+        $("#sltEsta").html("<option value='0'>CARREGANDO ESTADOS...</option>").show();
+
+        $.ajax({
+            url: pcWsHttp + "pesquisaEstados?lcIdEmpr=STN",
+            type: "GET",
+            dataType: "jsonp",
+            contentType: "application/json; charset=utf-8",
+
+            success: function (lmWkRsql) {
+                try {
+                    if (lmWkRsql.length > 0) {
+                        var lcWkRsql = "";
+
+                        for (var x = 0; x < lmWkRsql.length; x++) { lcWkRsql += "<option value='" + lmWkRsql[x]+ "'>" + lmWkRsql[x] + "</option>"; }
+
+                        $("#sltEsta").html(lcWkRsql).show();
+
+                        goSlEsta.disabled = false;
+                    }
+                    else { $("#sltEsta").html("<option value='0'>NENHUM ESTADO ENCONTRADO...</option>").show(); }
+                }
+                catch (loWkErro) { $("#sltEsta").html("<option value='0'>ERRO AO PESQUISAR ESTADOS...</option>").show(); }
+            },
+            error: function () { $("#sltEsta").html("<option value='0'>ERRO AO PESQUISAR ESTADOS...</option>").show(); }
+        });
+    }
+</script>
+<div class="panel panel-primary">
+    <div class="panel-heading">COTE SEU FRETE</div>
+    <div class="panel-body">
+        <table style="width: 100%;">
+            <tr>
+                <td>
+                    <select id="sltEsta" class="form-control"></select>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script>
+    var goSlEsta = document.getElementById("sltEsta");
+
+    pesquisaEstados();
+</script>
