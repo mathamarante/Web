@@ -1,0 +1,97 @@
+﻿<script>
+    function consultaCadastro() {
+        if (goTxUsua.value.trim() == "") {
+            goDvErro.style.display = "";
+            goDvErro.innerHTML = "USUÁRIO INVÁLIDO";
+            return;
+        }
+        else if (goPwSenh.value.trim() == "") {
+            goDvErro.style.display = "";
+            goDvErro.innerHTML = "SENHA INVÁLIDA";
+            return;
+        }
+
+        var lcCaSmd5 = md5(goPwSenh.value.trim()).toUpperCase();
+
+        $.ajax({
+            url: gcWsHttp + "consultaCadastro?lcIdEmpr=STN&lcCaFant=" + goTxUsua.value.trim() + "&lcCaSmd5=" + lcCaSmd5,
+            type: "GET",
+            dataType: "jsonp",
+            contentType: "application/json; charset=utf-8",
+
+            success: function (loWkRsql) {
+                try {
+                    if (loWkRsql.id_cadt > 0) {
+                        goDvErro.style.display = "none";
+                        goDvErro.innerHTML = "";
+
+                        localStorage.setItem("oUCnCadt", JSON.stringify(loWkRsql));
+                        window.location = "PagLay.html";
+                    }
+                    else {
+                        goDvErro.style.display = "";
+                        goDvErro.innerHTML = "USUÁRIO OU SENHA INVÁLIDA";
+                    }
+                }
+                catch (loWkErro) {
+                    goDvErro.style.display = "";
+                    goDvErro.innerHTML = "USUÁRIO OU SENHA INVÁLIDA";
+                }
+            },
+            error: function () {
+                goDvErro.style.display = "";
+                goDvErro.innerHTML = "USUÁRIO OU SENHA INVÁLIDA";
+            }
+        });
+    }
+</script>
+<div class="panel panel-primary">
+    <div class="panel-heading">LOGIN</div>
+    <div class="panel-body">
+        <table style="width: 100%;">
+            <tr>
+                <td style="text-align: right;">
+                    USUÁRIO:&nbsp;
+                </td>
+                <td>
+                    <input id="txtUsua" type="text" class="form-control" placeholder="DIGITE O USUÁRIO">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: right;">
+                    SENHA:&nbsp;
+                </td>
+                <td>
+                    <input id="pwdSenh" type="password" class="form-control" placeholder="DIGITE A SENHA">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: right;">
+                    <button id="btnEntr" type="button" class="btn btn-primary" style="border-radius: 4px !important;" onclick="consultaCadastro();" >ENTRAR</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<br />
+<div id="divErro" class="alert alert-danger" role="alert" style="display: none;"></div>
+<br />
+<script>
+    var goTxUsua = document.getElementById("txtUsua");
+    var goPwSenh = document.getElementById("pwdSenh");
+    var goBtEntr = document.getElementById("btnEntr");
+    var goDvErro = document.getElementById("divErro");
+
+    enterTeclado2("txtUsua", "pwdSenh");
+    enterTeclado3("pwdSenh", "btnEntr", "btnEntr");
+</script>

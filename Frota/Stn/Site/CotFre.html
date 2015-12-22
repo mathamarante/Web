@@ -1,8 +1,8 @@
 ﻿<script>
     function pesquisaEstados() {
-        goSlEsta.disabled = true;
+        goSlOruf.disabled = true;
 
-        $("#sltEsta").html("<option value='0'>CARREGANDO ESTADOS...</option>").show();
+        $("#sltOruf").html("<option value='0'>CARREGANDO ESTADOS...</option>").show();
 
         $.ajax({
             url: pcWsHttp + "pesquisaEstados?lcIdEmpr=STN",
@@ -13,36 +13,353 @@
             success: function (lmWkRsql) {
                 try {
                     if (lmWkRsql.length > 0) {
+                        pesquisaCidades(lmWkRsql[0]);
+
                         var lcWkRsql = "";
 
-                        for (var x = 0; x < lmWkRsql.length; x++) { lcWkRsql += "<option value='" + lmWkRsql[x]+ "'>" + lmWkRsql[x] + "</option>"; }
+                        for (var x = 0; x < lmWkRsql.length; x++) { lcWkRsql += "<option value='" + lmWkRsql[x].trim() + "'>" + lmWkRsql[x].trim() + "</option>"; }
 
-                        $("#sltEsta").html(lcWkRsql).show();
+                        $("#sltOruf").html(lcWkRsql).show();
 
-                        goSlEsta.disabled = false;
+                        goSlOruf.disabled = false;
                     }
-                    else { $("#sltEsta").html("<option value='0'>NENHUM ESTADO ENCONTRADO...</option>").show(); }
+                    else { $("#sltOruf").html("<option value='0'>NENHUM ESTADO ENCONTRADO...</option>").show(); }
                 }
-                catch (loWkErro) { $("#sltEsta").html("<option value='0'>ERRO AO PESQUISAR ESTADOS...</option>").show(); }
+                catch (loWkErro) { $("#sltOruf").html("<option value='0'>ERRO AO PESQUISAR ESTADOS...</option>").show(); }
             },
-            error: function () { $("#sltEsta").html("<option value='0'>ERRO AO PESQUISAR ESTADOS...</option>").show(); }
+            error: function () { $("#sltOruf").html("<option value='0'>ERRO AO PESQUISAR ESTADOS...</option>").show(); }
         });
     }
+
+    function pesquisaCidades(lcOrEsta) {
+        goSlOrig.disabled = true;
+
+        $("#sltOrig").html("<option value='0'>CARREGANDO CIDADES...</option>").show();
+
+        $.ajax({
+            url: pcWsHttp + "pesquisaCidades?lcIdEmpr=STN&lcOrEsta=" + lcOrEsta,
+            type: "GET",
+            dataType: "jsonp",
+            contentType: "application/json; charset=utf-8",
+
+            success: function (lmWkRsql) {
+                try {
+                    if (lmWkRsql.length > 0) {
+                        var lcWkRsql = "";
+
+                        for (var x = 0; x < lmWkRsql.length; x++) { lcWkRsql += "<option value='" + lmWkRsql[x].trim() + "'>" + lmWkRsql[x].trim() + "</option>"; }
+
+                        $("#sltOrig").html(lcWkRsql).show();
+
+                        pesquisaEstadosDestino(goSlOruf.value, goSlOrig.value);
+
+                        goSlOrig.disabled = false;
+                    }
+                    else { $("#sltOrig").html("<option value='0'>NENHUMA CIDADE ENCONTRADA...</option>").show(); }
+                }
+                catch (loWkErro) { $("#sltOrig").html("<option value='0'>ERRO AO PESQUISAR CIDADES...</option>").show(); }
+            },
+            error: function () { $("#sltOrig").html("<option value='0'>ERRO AO PESQUISAR CIDADES...</option>").show(); }
+        });
+    }
+
+    function pesquisaEstadosDestino(lcOrEsta, lcOrCida) {
+        goSlDeuf.disabled = true;
+
+        $("#sltDeuf").html("<option value='0'>CARREGANDO ESTADOS...</option>").show();
+
+        $.ajax({
+            url: pcWsHttp + "pesquisaEstadosDestino?lcIdEmpr=STN&lcOrEsta=" + lcOrEsta + "&lcOrCida=" + lcOrCida,
+            type: "GET",
+            dataType: "jsonp",
+            contentType: "application/json; charset=utf-8",
+
+            success: function (lmWkRsql) {
+                try {
+                    if (lmWkRsql.length > 0) {
+                        var lcWkRsql = "";
+
+                        for (var x = 0; x < lmWkRsql.length; x++) { lcWkRsql += "<option value='" + lmWkRsql[x].trim() + "'>" + lmWkRsql[x].trim() + "</option>"; }
+
+                        $("#sltDeuf").html(lcWkRsql).show();
+
+                        pesquisaCidadesDestino(goSlOruf.value, goSlOrig.value, goSlDeuf.value);
+
+                        goSlDeuf.disabled = false;
+                    }
+                    else { $("#sltDeuf").html("<option value='0'>NENHUM ESTADO ENCONTRADO...</option>").show(); }
+                }
+                catch (loWkErro) { $("#sltDeuf").html("<option value='0'>ERRO AO PESQUISAR ESTADOS...</option>").show(); }
+            },
+            error: function () { $("#sltDeuf").html("<option value='0'>ERRO AO PESQUISAR ESTADOS...</option>").show(); }
+        });
+    }
+
+    function pesquisaCidadesDestino(lcOrEsta, lcOrCida, lcDsEsta) {
+        goSlDest.disabled = true;
+
+        $("#sltDest").html("<option value='0'>CARREGANDO CIDADES...</option>").show();
+
+        $.ajax({
+            url: pcWsHttp + "pesquisaCidadesDestino?lcIdEmpr=STN&lcOrEsta=" + lcOrEsta + "&lcOrCida=" + lcOrCida + "&lcDsEsta=" + lcDsEsta,
+            type: "GET",
+            dataType: "jsonp",
+            contentType: "application/json; charset=utf-8",
+
+            success: function (lmWkRsql) {
+                try {
+                    if (lmWkRsql.length > 0) {
+                        var lcWkRsql = "";
+
+                        for (var x = 0; x < lmWkRsql.length; x++) { lcWkRsql += "<option value='" + lmWkRsql[x].trim() + "'>" + lmWkRsql[x].trim() + "</option>"; }
+
+                        $("#sltDest").html(lcWkRsql).show();
+
+                        goSlDest.disabled = false;
+                    }
+                    else { $("#sltDest").html("<option value='0'>NENHUMA CIDADE ENCONTRADA...</option>").show(); }
+                }
+                catch (loWkErro) { $("#sltDest").html("<option value='0'>ERRO AO PESQUISAR CIDADES...</option>").show(); }
+            },
+            error: function () { $("#sltDest").html("<option value='0'>ERRO AO PESQUISAR CIDADES...</option>").show(); }
+        });
+    }
+
+    function consultaQtkm() {
+        $.ajax({
+            url: pcWsHttp + "consultaQtkm?lcIdEmpr=STN&lcOrEsta=" + goSlOruf.value + "&lcOrCida=" + goSlOrig.value + "&lcDsEsta=" + goSlDeuf.value + "&lcDsCida=" + goSlDest.value,
+            type: "GET",
+            dataType: "jsonp",
+            contentType: "application/json; charset=utf-8",
+
+            success: function (lnWkRsql) {
+                try { consultaFrete(lnWkRsql.toString().trim()); }
+                catch (loWkErro) { consultaFrete("0"); }
+            },
+            error: function () { consultaFrete("0"); }
+        });
+    }
+
+    function consultaFrete(lcPaQtkm) {
+        $.ajax({
+            url: pcWsHttp + "consultaFrete?lcIdEmpr=STN&lcPaPeso=" + goNrPeso.value.trim() + "&lcPaQtkm=" + lcPaQtkm + "&lcPaVlnf=" + goNrVlnf.value.trim() + "&lcUfOrig=" + goSlOruf.value + "&lcUfDest=" + goSlDeuf.value,
+            type: "GET",
+            dataType: "jsonp",
+            contentType: "application/json; charset=utf-8",
+
+            success: function (lnWkRsql) {
+                try {
+                    goDvErro.style.display = "none";
+                    goDvErro.innerHTML = "";
+                    goDvCota.style.display = "";
+
+                    goTdOrig.innerHTML = goSlOrig.value + "/" + goSlOruf.value;
+                    goTdDest.innerHTML = goSlDest.value + "/" + goSlDeuf.value;
+                    goTdQtkm.innerHTML = lcPaQtkm + " Km";
+                    goTdPeso.innerHTML = brDecimal(goNrPeso.value) + " Kg";
+                    goTdVlnf.innerHTML = brMoney(goNrVlnf.value);
+                    goTdTliq.innerHTML = brMoney(lnWkRsql);
+                }
+                catch (loWkErro) {
+                    goDvErro.style.display = "";
+                    goDvErro.innerHTML = "ERRO AO COTAR";
+                    goDvCota.style.display = "none";
+                }
+            },
+            error: function () {
+                goDvErro.style.display = "";
+                goDvErro.innerHTML = "ERRO AO COTAR";
+                goDvCota.style.display = "none";
+            }
+        });
+    }
+
+    function calculaFrete() {
+        try {
+            if (parseFloat(goNrPeso.value) > 0) { }
+            else {
+                goDvErro.style.display = "";
+                goDvErro.innerHTML = "PESO INVÁLIDO";
+                goDvCota.style.display = "none";
+                return;
+            }
+        }
+        catch (loWkErro) {
+            goDvErro.style.display = "";
+            goDvErro.innerHTML = "PESO INVÁLIDO";
+            goDvCota.style.display = "none";
+            return;
+        }
+
+        try {
+            if (parseFloat(goNrVlnf.value) > 0) { }
+            else {
+                goDvErro.style.display = "";
+                goDvErro.innerHTML = "VALOR DA NOTA FISCAL INVÁLIDA";
+                goDvCota.style.display = "none";
+                return;
+            }
+        }
+        catch (loWkErro) {
+            goDvErro.style.display = "";
+            goDvErro.innerHTML = "VALOR DA NOTA FISCAL INVÁLIDA";
+            goDvCota.style.display = "none";
+            return;
+        }
+
+        consultaQtkm();
+    }
+
+    //@ sourceURL=CotFre1.js
 </script>
 <div class="panel panel-primary">
     <div class="panel-heading">COTE SEU FRETE</div>
     <div class="panel-body">
         <table style="width: 100%;">
             <tr>
+                <td style="text-align: right;">
+                    ORIGEM:&nbsp;
+                </td>
                 <td>
-                    <select id="sltEsta" class="form-control"></select>
+                    <select id="sltOruf" class="form-control" disabled onchange="pesquisaCidades(this.value);"></select>
+                </td>
+                <td>
+                    <select id="sltOrig" class="form-control" disabled onchange="pesquisaEstadosDestino(goSlOruf.value, goSlOrig.value);"></select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: right;">
+                    DESTINO:&nbsp;
+                </td>
+                <td>
+                    <select id="sltDeuf" class="form-control" disabled onchange="pesquisaCidadesDestino(goSlOruf.value, goSlOrig.value, goSlDeuf.value);"></select>
+                </td>
+                <td>
+                    <select id="sltDest" class="form-control" disabled></select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: right;">
+                    PESO:&nbsp;
+                </td>
+                <td colspan="2">
+                    <input id="nroPeso" type="number" class="form-control" placeholder="DIGITE O PESO EM KG">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: right;">
+                    VALOR NF:&nbsp;
+                </td>
+                <td colspan="2">
+                    <input id="nroVlnf" type="number" class="form-control" placeholder="DIGITE O VALOR DA NOTA FISCAL">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3" style="text-align: right;">
+                    <button id="btnCota" type="button" class="btn btn-primary" style="border-radius: 4px !important;" onclick="calculaFrete();" >CÁLCULO FRETE</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<br />
+<div id="divErro" class="alert alert-danger" role="alert" style="display: none;"></div>
+<br />
+<div id="divCota" class="panel panel-primary" style="display: none;">
+    <div class="panel-heading">COTAÇÃO</div>
+    <div class="panel-body">
+        <table style="width: 100%;">
+            <tr>
+                <td style="text-align: right;">
+                    ORIGEM:&nbsp;
+                </td>
+                <td style="font-weight: bold;" id="ttdOrig"></td>
+                <td style="text-align: right;">
+                    DESTINO:&nbsp;
+                </td>
+                <td style="font-weight: bold;" id="ttdDest"></td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: right;">
+                    DISTÂNCIA:&nbsp;
+                </td>
+                <td style="font-weight: bold;" id="ttdQtkm"></td>
+                <td style="text-align: right;">
+                    PESO:&nbsp;
+                </td>
+                <td style="font-weight: bold;" id="ttdPeso"></td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: right;">
+                    VALOR NF:&nbsp;
+                </td>
+                <td style="font-weight: bold;" id="ttdVlnf"></td>
+                <td style="text-align: right;">
+                    TOTAL:&nbsp;
+                </td>
+                <td style="font-weight: bold;" id="ttdTliq"></td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" style="color: red; text-align: center;">
+                    <b>ATENÇÃO:</b> O total é um valor aproximado e está sujeito a alteração.
                 </td>
             </tr>
         </table>
     </div>
 </div>
 <script>
-    var goSlEsta = document.getElementById("sltEsta");
+    var goSlOruf = document.getElementById("sltOruf");
+    var goSlOrig = document.getElementById("sltOrig");
+    var goSlDeuf = document.getElementById("sltDeuf");
+    var goSlDest = document.getElementById("sltDest");
+    var goNrPeso = document.getElementById("nroPeso");
+    var goNrVlnf = document.getElementById("nroVlnf");
+    var goDvErro = document.getElementById("divErro");
+    var goDvCota = document.getElementById("divCota");
+    var goTdOrig = document.getElementById("ttdOrig");
+    var goTdDest = document.getElementById("ttdDest");
+    var goTdQtkm = document.getElementById("ttdQtkm");
+    var goTdPeso = document.getElementById("ttdPeso");
+    var goTdVlnf = document.getElementById("ttdVlnf");
+    var goTdTliq = document.getElementById("ttdTliq");
 
     pesquisaEstados();
+
+    enterTeclado2("nroPeso", "nroVlnf");
+    enterTeclado3("nroVlnf", "btnCota", "btnCota");
 </script>
