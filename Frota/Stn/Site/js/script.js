@@ -220,3 +220,8 @@ function brDecimal(v) {
 
     return v;
 }
+
+function htmlDataParaObjetoData(lcWkData) {
+    var lmWkData = lcWkData.split("-");
+    return new Date(lmWkData[0], lmWkData[1] - 1, lmWkData[2]);
+}

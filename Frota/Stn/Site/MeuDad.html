@@ -1,0 +1,148 @@
+﻿<script>
+    function alteraSenha() {
+        if (goPwAtua.value.toString().trim() == "") {
+            monstraMsg("CAMPO SENHA ATUAL OBRIGATÓRIO", "");
+            return;
+        }
+        else if (goPwNova.value.toString().trim() == "") {
+            monstraMsg("CAMPO NOVA SENHA OBRIGATÓRIO", "");
+            return;
+        }
+        else if (goPwConf.value.toString().trim() == "") {
+            monstraMsg("CAMPO CONFIRMAÇÃO DE NOVA SENHA OBRIGATÓRIO", "");
+            return;
+        }
+        else if (goPwNova.value.toString().trim().toUpperCase() != goPwConf.value.toString().trim().toUpperCase()) {
+            monstraMsg("SENHAS NÃO CONFEREM", "");
+            return;
+        }
+        else if (goPwAtua.value.toString().trim().toUpperCase() == goPwNova.value.toString().trim().toUpperCase()) {
+            monstraMsg("NOVA SENHA IGUAL SENHA ATUAL", "");
+            return;
+        }
+
+        var lcNvSmd5 = md5(goPwNova.value.toString().trim().toUpperCase()).toUpperCase();
+
+        if (md5(goPwAtua.value.toString().trim().toUpperCase()).toUpperCase() != poCnCadt.ca_smd5) {
+            monstraMsg("SENHA ATUAL ERRADA", "");
+            return;
+        }
+
+        $.ajax({
+            url: pcWsHttp + "alteraSenha?lcIdEmpr=STN&lcIdCadt=" + poCnCadt.id_cadt.toString().trim() + "&lcCaSmd5=" + poCnCadt.ca_smd5 + "&lcNvSmd5=" + lcNvSmd5,
+            type: "GET",
+            dataType: "jsonp",
+            contentType: "application/json; charset=utf-8",
+
+            success: function (llSnNova) {
+                try {
+                    if (llSnNova) {
+                        monstraMsg("", "SENHA ALTERADA COM SUCESSO");
+
+                        goPwAtua.value = "";
+                        goPwNova.value = "";
+                        goPwConf.value = "";
+
+                        poCnCadt.ca_smd5 = lcNvSmd5;
+                    }
+                    else { monstraMsg("ERRO AO ALTERAR SENHA", ""); }
+                }
+                catch (loWkErro) { monstraMsg("ERRO AO ALTERAR SENHA", ""); }
+            },
+            error: function () { monstraMsg("ERRO AO ALTERAR SENHA", ""); }
+        });
+    }
+
+    function monstraMsg(lcMgErro, lcMgSuce) {
+        if (lcMgErro.trim() != "") {
+            goDvSuce.style.display = "none";
+            goDvErro.style.display = "";
+        }
+        else {
+            goDvSuce.style.display = "";
+            goDvErro.style.display = "none";
+        }
+
+        goDvSuce.innerHTML = lcMgSuce;
+        goDvErro.innerHTML = lcMgErro;
+    }
+
+    //@ sourceURL=MeuDad1.js
+</script>
+<div class="panel panel-default">
+    <div class="panel-heading fundoPreto">MEUS DADOS</div>
+    <div class="panel-body">
+        <table style="width: 100%;">
+            <tr>
+                <td id="ttdNome" style="text-align: center; font-weight: bold; font-size: large;" colspan="2"></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: right;">
+                    SENHA ATUAL:&nbsp;
+                </td>
+                <td>
+                    <input id="pwdAtua" type="password" class="form-control" placeholder="DIGITE A SENHA ATUAL">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: right;">
+                    NOVA SENHA:&nbsp;
+                </td>
+                <td>
+                    <input id="pwdNova" type="password" class="form-control" placeholder="DIGITE A NOVA SENHA">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: right;">
+                    CONFIRMAÇÃO:&nbsp;
+                </td>
+                <td>
+                    <input id="pwdConf" type="password" class="form-control" placeholder="DIGITE A CONFIRMAÇÃO NOVA SENHA">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: right;">
+                    <button id="btnSalv" type="button" class="btn btn-default fundoPreto" style="border-radius: 4px !important;" onclick="alteraSenha();">SALVAR</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<br />
+<div id="divErro" class="alert alert-danger" role="alert" style="display: none;"></div>
+<div id="divSuce" class="alert alert-success" role="alert" style="display: none;"></div>
+<br />
+<script>
+    var goDvErro = document.getElementById("divErro");
+    var goDvSuce = document.getElementById("divSuce");
+    var goPwAtua = document.getElementById("pwdAtua");
+    var goPwNova = document.getElementById("pwdNova");
+    var goPwConf = document.getElementById("pwdConf");
+    var goTdNome = document.getElementById("ttdNome");
+
+    goTdNome.innerHTML = poCnCadt.ca_nome;
+
+    enterTeclado2("pwdAtua", "pwdNova");
+    enterTeclado2("pwdNova", "pwdConf");
+    enterTeclado3("pwdConf", "btnSalv", "btnSalv");
+</script>

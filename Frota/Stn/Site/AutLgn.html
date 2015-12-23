@@ -11,10 +11,11 @@
             return;
         }
 
-        var lcCaSmd5 = md5(goPwSenh.value.trim()).toUpperCase();
+        var lcCaSenh = goPwSenh.value.trim().toUpperCase();
+        var lcCaSmd5 = md5(goPwSenh.value.trim().toUpperCase()).toUpperCase();
 
         $.ajax({
-            url: gcWsHttp + "consultaCadastro?lcIdEmpr=STN&lcCaFant=" + goTxUsua.value.trim() + "&lcCaSmd5=" + lcCaSmd5,
+            url: pcWsHttp + "consultaCadastro?lcIdEmpr=STN&lcCaFant=" + goTxUsua.value.trim() + "&lcCaSmd5=" + lcCaSmd5,
             type: "GET",
             dataType: "jsonp",
             contentType: "application/json; charset=utf-8",
@@ -26,7 +27,7 @@
                         goDvErro.innerHTML = "";
 
                         localStorage.setItem("oUCnCadt", JSON.stringify(loWkRsql));
-                        window.location = "PagLay.html";
+                        window.location = "AreRes.html";
                     }
                     else {
                         goDvErro.style.display = "";
@@ -44,6 +45,8 @@
             }
         });
     }
+
+    //@ sourceURL=AutLgn1.js
 </script>
 <div class="panel panel-primary">
     <div class="panel-heading">LOGIN</div>
