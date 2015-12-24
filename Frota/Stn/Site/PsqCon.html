@@ -26,7 +26,79 @@
             return;
         }
 
-        mostraMsg("");
+        var lcCtNume = "", lcNfNume = "", lcReCnpj = "", lcReNcpf = "", lcDeCnpj = "", lcDeNcpf = "";
+
+        //if (goSlNota.value == "nf_nume") {
+        //    lcNfNume = "=" + goNrNota.value;
+        //    lcCtNume = ":IsNull=True";
+        //}
+        //else {
+        //    lcNfNume = ":IsNull=True";
+        //    lcCtNume = "=" + goNrNota.value;
+        //}
+
+        lcNfNume = ":IsNull=True";
+        lcCtNume = ":IsNull=True";
+
+        if (goSlRede.value == "remetente") {
+            if (poCnCadt.ca_cnpj.trim() != "") {
+                lcReCnpj = "=" + poCnCadt.ca_cnpj.trim();
+                lcReNcpf = ":IsNull=True";
+            }
+            else {
+                lcReCnpj = ":IsNull=True";
+                lcReNcpf = "=" + poCnCadt.ca_ncpf.trim();
+            }
+
+            lcDeCnpj = ":IsNull=True";
+            lcDeNcpf = ":IsNull=True";
+        }
+        else {
+            if (poCnCadt.ca_cnpj.trim() != "") {
+                lcDeCnpj = "=" + poCnCadt.ca_cnpj.trim();
+                lcDeNcpf = ":IsNull=True";
+            }
+            else {
+                lcDeCnpj = ":IsNull=True";
+                lcDeNcpf = "=" + poCnCadt.ca_ncpf.trim();
+            }
+
+            lcReCnpj = ":IsNull=True";
+            lcReNcpf = ":IsNull=True";
+        }
+
+        $.ajax({
+            url: pcWsHttp + "pesquisaConhecimentos?lcIdEmpr=STN&lcCtNume" + lcCtNume + "&lcNfNume" + lcNfNume + "&lcReCnpj" + lcReCnpj + "&lcReNcpf" + lcReNcpf + "&lcDeCnpj" + lcDeCnpj + "&lcDeNcpf" + lcDeNcpf + "&lcCtDtde=" + goDtInic.value.toString().trim() + "&lcCtDtata=" + goDtFina.value.toString().trim(),
+            type: "GET",
+            dataType: "jsonp",
+            contentType: "application/json; charset=utf-8",
+
+            success: function (lmWkRsql) {
+                try {
+                    if (lmWkRsql.length > 0) {
+                        var lcWkRsql = "";
+
+                        for (var x = 0; x < lmWkRsql.length; x++) {
+                            lcWkRsql += "<tr class='ttrPesq'>";
+                            lcWkRsql += "<td>" + lmWkRsql[x].ct_nume + "</td>";
+                            lcWkRsql += "<td>" + lmWkRsql[x].re_fant + "</td>";
+                            lcWkRsql += "<td>" + lmWkRsql[x].de_fant + "</td>";
+                            lcWkRsql += "<td>" + lmWkRsql[x].fo_cida + "/" + lmWkRsql[x].fo_esta + "</td>";
+                            lcWkRsql += "<td>" + lmWkRsql[x].fd_cida + "/" + lmWkRsql[x].fd_esta + "</td>";
+                            lcWkRsql += "<td>" + jsonDate(lmWkRsql[x].ct_data) + "</td>";
+                            lcWkRsql += "</tr>";
+                        }
+
+                        $("#tbdCtrc").html(lcWkRsql).show();
+
+                        mostraMsg("");
+                    }
+                    else { mostraMsg("NENHUM CONHECIMENTO ENCONTRADO"); }
+                }
+                catch (loWkErro) { mostraMsg("NENHUM CONHECIMENTO ENCONTRADO"); }
+            },
+            error: function () { mostraMsg("NENHUM CONHECIMENTO ENCONTRADO"); }
+        });
     }
 
     function mostraMsg(lcMgErro) {
@@ -42,97 +114,117 @@
         goDvErro.innerHTML = lcMgErro;
     }
 
+    function mudaAba(llWkNaba) {
+        if (llWkNaba == 1) {
+            goDvPesq.style.display = "";
+            goDvCons.style.display = "none";
+
+            $("#lliPesq").addClass("active");
+            $("#lliCons").removeClass("active");
+        }
+        else {
+            goDvPesq.style.display = "none";
+            goDvCons.style.display = "";
+
+            $("#lliCons").addClass("active");
+            $("#lliPesq").removeClass("active");
+        }
+    }
+
     //@ sourceURL=PsqCon1.js
 </script>
-<div class="panel panel-default">
-    <div class="panel-heading fundoPreto fundoPreto">PESQUISA DE CONHECIMENTOS</div>
-    <div class="panel-body">
-        <table style="width: 100%;">
-            <tr>
-                <td></td>
-                <td>
-                    <select id="sltRede" class="form-control">
-                        <option value="destinatario">DESTINATÁRIO</option>
-                        <option value="remetente">REMETENTE</option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    &nbsp;
-                </td>
-            </tr>
-            <tr>
-                <td style="text-align: right;">
-                    PERÍODO DE:&nbsp;
-                </td>
-                <td>
-                    <input id="datInic" type="date" class="form-control" placeholder="DIGITE A DATA INICIAL">
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    &nbsp;
-                </td>
-            </tr>
-            <tr>
-                <td style="text-align: right;">
-                    ATÉ:&nbsp;
-                </td>
-                <td>
-                    <input id="datFina" type="date" class="form-control" placeholder="DIGITE A DATA FINAL">
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    &nbsp;
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" style="text-align: right;">
-                    <button id="btnRast" type="button" class="btn btn-default fundoPreto" style="border-radius: 4px !important;" onclick="pesquisaConhecimentos();">PESQUISAR</button>
-                </td>
-            </tr>
+<style>
+    .ttrPesq:hover {
+        background-color: #808080;
+        cursor: pointer;
+    }
+</style>
+<ul class="nav nav-tabs">
+    <li id="lliPesq" role="presentation" class="active"><a href="#" onclick="mudaAba(1);">PESQUISA</a></li>
+    <li id="lliCons" role="presentation"><a href="#" onclick="mudaAba(2);">CONSULTA</a></li>
+</ul>
+<br />
+<div id="divPesq">
+    <div class="panel panel-default">
+        <div class="panel-heading fundoPreto fundoPreto">PESQUISA DE CONHECIMENTOS</div>
+        <div class="panel-body">
+            <table style="width: 100%;">
+                <tr>
+                    <td></td>
+                    <td>
+                        <select id="sltRede" class="form-control">
+                            <option value="destinatario">DESTINATÁRIO</option>
+                            <option value="remetente">REMETENTE</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">
+                        PERÍODO DE:&nbsp;
+                    </td>
+                    <td>
+                        <input id="datInic" type="date" class="form-control" placeholder="DIGITE A DATA INICIAL">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">
+                        ATÉ:&nbsp;
+                    </td>
+                    <td>
+                        <input id="datFina" type="date" class="form-control" placeholder="DIGITE A DATA FINAL">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: right;">
+                        <button id="btnPesq" type="button" class="btn btn-default fundoPreto" style="border-radius: 4px !important;" onclick="pesquisaConhecimentos();">PESQUISAR</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <br />
+    <div id="divCtrc" class="panel panel-default" style="display: none;">
+        <div class="panel-heading fundoPreto">CONHECIMENTOS</div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th><b>NRO</b></th>
+                    <th><b>REMETENTE</b></th>
+                    <th><b>DESTINATÁRIO</b></th>
+                    <th><b>FL. ORIG.</b></th>
+                    <th><b>FL. DEST.</b></th>
+                    <th><b>EMISSÃO</b></th>
+                </tr>
+            </thead>
+            <tbody id="tbdCtrc"></tbody>
         </table>
     </div>
 </div>
-<br />
+<div id="divCons" style="display: none;"></div>
 <div id="divErro" class="alert alert-danger" role="alert" style="display: none;"></div>
-<br />
-<div id="divCtrc" class="panel panel-default" style="display: none;">
-    <div class="panel-heading fundoPreto">CONHECIMENTOS</div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th><b>NR. NF.</b></th>
-                <th><b>PESO KG</b></th>
-                <th><b>QT. VOLUME</b></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>NR. NF.</td>
-                <td>PESO KG</td>
-                <td>QT. VOLUME</td>
-            </tr>
-            <tr>
-                <td>NR. NF.</td>
-                <td>PESO KG</td>
-                <td>QT. VOLUME</td>
-            </tr>
-            <tr>
-                <td>NR. NF.</td>
-                <td>PESO KG</td>
-                <td>QT. VOLUME</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
 <script>
     var goDtInic = document.getElementById("datInic");
     var goDtFina = document.getElementById("datFina");
     var goDvCtrc = document.getElementById("divCtrc");
     var goDvErro = document.getElementById("divErro");
+    var goSlRede = document.getElementById("sltRede");
+    var goDvPesq = document.getElementById("divPesq");
+    var goDvCons = document.getElementById("divCons");
     var gdDtHoje = new Date();
     var gdMsAnte = new Date();
 
@@ -141,4 +233,7 @@
 
     goDtInic.valueAsDate = gdMsAnte;
     goDtFina.valueAsDate = gdDtHoje;
+
+    enterTeclado2("datInic", "datFina");
+    enterTeclado3("datFina", "btnPesq", "btnPesq");
 </script>

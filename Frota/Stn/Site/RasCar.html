@@ -81,22 +81,24 @@
         }
 
         $.ajax({
-            url: pcWsHttp + "consultaConhecimento?lcIdEmpr=STN&lcCtNume" + lcCtNume + "&lcNfNume" + lcNfNume + "&lcReCnpj" + lcReCnpj + "&lcReNcpf" + lcReNcpf + "&lcDeCnpj" + lcDeCnpj + "&lcDeNcpf" + lcDeNcpf,
+            url: pcWsHttp + "pesquisaConhecimentos?lcIdEmpr=STN&lcCtNume" + lcCtNume + "&lcNfNume" + lcNfNume + "&lcReCnpj" + lcReCnpj + "&lcReNcpf" + lcReNcpf + "&lcDeCnpj" + lcDeCnpj + "&lcDeNcpf" + lcDeNcpf + "&lcCtDtde:IsNull=True&lcCtDtat:IsNull=True",
             type: "GET",
             dataType: "jsonp",
             contentType: "application/json; charset=utf-8",
 
-            success: function (loWkRsql) {
+            success: function (lmWkRsql) {
                 try {
+                    var loWkRsql = lmWkRsql[0];
+
                     if (loWkRsql.id_ctrc > 0) {
                         goDvCtrc.style.display = "";
 
                         goSpNume.innerHTML = loWkRsql.ct_nume.toString().trim();
                         goSpData.innerHTML = jsonDate(loWkRsql.ct_data);
-                        goSpFlor.innerHTML = loWkRsql.fo_cida;
+                        goSpFlor.innerHTML = loWkRsql.fo_cida + "/" + loWkRsql.fo_esta.trim();
 
-                        if (loWkRsql.fi_cida.trim() == "") { goSpFldt.innerHTML = loWkRsql.fd_cida.trim(); }
-                        else { goSpFldt.innerHTML = loWkRsql.fi_cida.trim(); }
+                        if (loWkRsql.fi_cida.trim() == "") { goSpFldt.innerHTML = loWkRsql.fd_cida.trim() + "/" + loWkRsql.fd_esta.trim(); }
+                        else { goSpFldt.innerHTML = loWkRsql.fi_cida.trim() + "/" + loWkRsql.fi_esta.trim(); }
 
                         if (loWkRsql.ct_tfre == 1) { goSpTfre.innerHTML = "CIF"; }
                         else { goSpTfre.innerHTML = "FOB"; }
