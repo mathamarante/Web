@@ -28,19 +28,10 @@
 
         var lcCtNume = "", lcNfNume = "", lcReCnpj = "", lcReNcpf = "", lcDeCnpj = "", lcDeNcpf = "";
 
-        //if (goSlNota.value == "nf_nume") {
-        //    lcNfNume = "=" + goNrNota.value;
-        //    lcCtNume = ":IsNull=True";
-        //}
-        //else {
-        //    lcNfNume = ":IsNull=True";
-        //    lcCtNume = "=" + goNrNota.value;
-        //}
-
         lcNfNume = ":IsNull=True";
         lcCtNume = ":IsNull=True";
 
-        if (goSlRede.value == "remetente") {
+        if (goSlRmdt.value == "remetente") {
             if (poCnCadt.ca_cnpj.trim() != "") {
                 lcReCnpj = "=" + poCnCadt.ca_cnpj.trim();
                 lcReNcpf = ":IsNull=True";
@@ -79,7 +70,7 @@
                         var lcWkRsql = "";
 
                         for (var x = 0; x < lmWkRsql.length; x++) {
-                            lcWkRsql += "<tr class='ttrPesq'>";
+                            lcWkRsql += "<tr id='ttrPesq" + x.toString() + "' class='ttrPesq' onclick='cliqueRastreiaCarga(" + x.toString() + ");' >";
                             lcWkRsql += "<td>" + lmWkRsql[x].ct_nume + "</td>";
                             lcWkRsql += "<td>" + lmWkRsql[x].re_fant + "</td>";
                             lcWkRsql += "<td>" + lmWkRsql[x].de_fant + "</td>";
@@ -103,15 +94,15 @@
 
     function mostraMsg(lcMgErro) {
         if (lcMgErro.trim() != "") {
-            goDvErro.style.display = "";
-            goDvCtrc.style.display = "none";
+            goDvPqer.style.display = "";
+            goDvPqct.style.display = "none";
         }
         else {
-            goDvErro.style.display = "none";
-            goDvCtrc.style.display = "";
+            goDvPqer.style.display = "none";
+            goDvPqct.style.display = "";
         }
 
-        goDvErro.innerHTML = lcMgErro;
+        goDvPqer.innerHTML = lcMgErro;
     }
 
     function mudaAba(llWkNaba) {
@@ -129,6 +120,19 @@
             $("#lliCons").addClass("active");
             $("#lliPesq").removeClass("active");
         }
+    }
+
+    function cliqueRastreiaCarga(lnNrLinh) {
+        mudaAba(2);
+
+        if ($("#ttrPesq" + lnNrLinh + " > td")[1].innerHTML == "PELLEGRINO") { goSlRede.value = "remetente"; }
+        else { goSlRede.value = "destinatario"; }
+
+        goSlNota.value = "ct_nume";
+
+        nroNota.value = $("#ttrPesq" + lnNrLinh + " > td")[0].innerHTML;
+
+        rastreiaCarga();
     }
 
     //@ sourceURL=PsqCon1.js
@@ -152,7 +156,7 @@
                 <tr>
                     <td></td>
                     <td>
-                        <select id="sltRede" class="form-control">
+                        <select id="sltRmdt" class="form-control">
                             <option value="destinatario">DESTINATÁRIO</option>
                             <option value="remetente">REMETENTE</option>
                         </select>
@@ -198,7 +202,7 @@
         </div>
     </div>
     <br />
-    <div id="divCtrc" class="panel panel-default" style="display: none;">
+    <div id="divPqct" class="panel panel-default" style="display: none;">
         <div class="panel-heading fundoPreto">CONHECIMENTOS</div>
         <table class="table">
             <thead>
@@ -214,15 +218,15 @@
             <tbody id="tbdCtrc"></tbody>
         </table>
     </div>
+    <div id="divPqer" class="alert alert-danger" role="alert" style="display: none;"></div>
 </div>
 <div id="divCons" style="display: none;"></div>
-<div id="divErro" class="alert alert-danger" role="alert" style="display: none;"></div>
 <script>
     var goDtInic = document.getElementById("datInic");
     var goDtFina = document.getElementById("datFina");
-    var goDvCtrc = document.getElementById("divCtrc");
-    var goDvErro = document.getElementById("divErro");
-    var goSlRede = document.getElementById("sltRede");
+    var goDvPqct = document.getElementById("divPqct");
+    var goDvPqer = document.getElementById("divPqer");
+    var goSlRmdt = document.getElementById("sltRmdt");
     var goDvPesq = document.getElementById("divPesq");
     var goDvCons = document.getElementById("divCons");
     var gdDtHoje = new Date();
@@ -236,4 +240,6 @@
 
     enterTeclado2("datInic", "datFina");
     enterTeclado3("datFina", "btnPesq", "btnPesq");
+
+    $("#divCons").load("RasCar.html");
 </script>
