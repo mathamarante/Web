@@ -4,7 +4,7 @@
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!-->
 <html class="no-js">
- <!--<![endif]-->
+<!--<![endif]-->
 <head>
     <!-- Basic Page Needs
     ================================================== -->
@@ -38,11 +38,117 @@
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
     <link href='http://fonts.googleapis.com/css?family=Lato:400,300' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,500' rel='stylesheet' type='text/css'>
+
+    <style>
+        #imgCrgd {
+            margin: auto;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            display: none;
+            z-index: 1;
+        }
+
+        #divCrgd {
+            position: fixed;
+            padding: 0;
+            margin: 0;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.5);
+            display: none;
+        }
+    </style>
+
+    <script>
+        function validaEmail(lcWkMail) {
+            if (lcWkMail.trim() == "") { return true; }
+
+            var loErMail = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+
+            return loErMail.test(lcWkMail);
+        }
+
+        function mostraMsg(lcMgErro, lcMgSuce) {
+            if (lcMgErro.trim() != "") {
+                goDvSuce.style.display = "none";
+                goSpScmg.innerHTML = "";
+                goDvErro.style.display = "";
+                goSpMnsg.innerHTML = lcMgErro;
+            }
+            else {
+                goDvSuce.style.display = "";
+                goSpScmg.innerHTML = lcMgSuce;
+                goDvErro.style.display = "none";
+                goSpMnsg.innerHTML = "";
+            }
+        }
+
+        function limpaCampos() {
+            goTxNome.value = "";
+            goTxMail.value = "";
+            goTxFone.value = "";
+            goTaMnsg.value = "";
+        }
+
+        function enviaEmail() {
+            if (goTxMail.value.trim() == "" && goTxFone.value.trim() == "") {
+                mostraMsg("Deixe um e-mail ou telefone para não perdermos o contato", "");
+
+                return;
+            }
+
+            if (!validaEmail(goTxMail.value.trim())) {
+                mostraMsg("E-mail inválido", "");
+
+                return;
+            }
+
+            if (goTaMnsg.value.trim() == "") {
+                mostraMsg("Deixe uma mensagem", "");
+
+                return;
+            }
+
+            $("#imgCrgd").show();
+            $("#divCrgd").show();
+
+            $.ajax({
+                url: gcWsHttp + "enviaEmail?lcClNome=" + goTxNome.value.trim() + "&lcClMail=" + goTxMail.value.trim() + "&lcClFone=" + goTxFone.value.trim() + "&lcClMnsg=" + goTaMnsg.value.replace(/\r?\n/g, '<br />').trim(),
+                type: "GET",
+                dataType: "jsonp",
+                contentType: "application/json; charset=utf-8",
+
+                success: function (lmPqRank) {
+                    try {
+                        $("#imgCrgd").hide();
+                        $("#divCrgd").hide();
+                        limpaCampos();
+                        mostraMsg("", "E-mail enviado com sucesso, você receberá um e-mail de confirmação");
+                    }
+                    catch (loWkErro) { mostraMsg("Erro ao enviar e-mail, por favor envie diretamente para matheus@ats.com.br", ""); }
+                },
+                error: function () {
+                    $("#imgCrgd").hide();
+                    $("#divCrgd").hide();
+                    mostraMsg("Erro ao enviar e-mail, por favor envie diretamente para matheus@ats.com.br", "");
+                }
+            });
+        }
+
+    </script>
 </head>
 <body data-spy="scroll" data-target=".navbar-fixed-top">
     <!--[if lt IE 7]>
         <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
+    <img src="images/carregando.gif" id="imgCrgd" />
+
+    <div id="divCrgd"></div>
     <header id="header" class="navbar-fixed-top navbar-inverse video-menu" role="banner">
         <div class="container">
             <!-- <div class="row"> -->
@@ -74,9 +180,9 @@
     <section id="home" class="hero landing hero-section">
         <div class="video-background-container">
             <video preload="auto" autoplay loop muted class="video-background">
-                <source type="video/mp4" src="videos/gdrive.mp4" />
-                <source type="video/ogg" src="videos/gdrive.ogv" />
-                <source type="video/webm" src="videos/gdrive.webm" />
+                <source type="video/mp4" src="videos/ats.mp4" />
+                <!--<source type="video/ogg" src="videos/ats.ogv" />-->
+                <source type="video/webm" src="videos/ats.webm" />
             </video>
         </div>
         <div class="parallax-overlay"></div>
@@ -115,8 +221,8 @@
                         <div class="feature_content">
                             <i class="fa fa-car"></i>
                             <h5>DEALER</h5>
-                            <p>Sistema de Gestão de Concessionárias.</p>
-                            <button class="btn btn-main" onclick="location.href = '#video-fact'"> Saiba Mais</button>
+                            <p>Sistema Dealer de Gestão de Concessionárias.</p>
+                            <button class="btn btn-main" onclick="location.href = '#portfolio';"> Saiba Mais</button>
                         </div>
                     </div>
                     <div class="col-md-3 col-xs-12 col-sm-6">
@@ -124,7 +230,7 @@
                             <i class="fa fa-cog"></i>
                             <h5>ERP</h5>
                             <p>Sistema de Gestão para Indústrias e Comércio.</p>
-                            <button class="btn btn-main" onclick="location.href = '#video-fact'"> Saiba Mais</button>
+                            <button class="btn btn-main" onclick="location.href = '#portfolio';"> Saiba Mais</button>
                         </div>
                     </div> <!-- Col-md-4 Single_feature End -->
                     <div class="col-md-3 col-xs-12 col-sm-6">
@@ -132,7 +238,7 @@
                             <i class="fa fa-truck"></i>
                             <h5>FROTA</h5>
                             <p>Solução destinada a Empresas de Transportes.</p>
-                            <button class="btn btn-main" onclick="location.href = '#video-fact'">Saiba Mais</button>
+                            <button class="btn btn-main" onclick="location.href = '#portfolio';">Saiba Mais</button>
                         </div>
                     </div> <!-- Col-md-4 Single_feature End -->
                     <div class="col-md-3 col-xs-12 col-sm-6">
@@ -140,7 +246,7 @@
                             <i class="fa fa-pencil-square-o"></i>
                             <h5>RH</h5>
                             <p>Solução destinada a Departamento de RH ou DP.</p>
-                            <button class="btn btn-main" onclick="location.href = '#video-fact'">Saiba Mais</button>
+                            <button class="btn btn-main" onclick="location.href = '#portfolio';">Saiba Mais</button>
                         </div>
                     </div> <!-- Col-md-4 Single_feature End -->
                     <!-- <button class="btn btn-main"> Read More</button> -->
@@ -155,15 +261,14 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="feature_header text-center">
-                        <h3 class="feature_title">Our <b>Skills</b></h3>
-                        <h4 class="feature_sub">Lorem ipsum dolor sit amet, consectetur adipisicing elit. <br>Iusto provident non voluptatibus animi quidem incidunt eum, eligendi doloribus dicta.</h4>
-                        <div class="divider"></div>
+                        <h3 class="feature_title">Conte <b>Conosco</b></h3>
+                        <h4 class="feature_sub">Estamos trabalhando para aperfeiçoar nossas soluções cada vez mais e atender melhor nossos clientes.</h4>
+                        <!--<div class="divider"></div>-->
                     </div>
                 </div>  <!-- Col-md-12 End -->
             </div>
-            <div class="about-desc">
+            <!--<div class="about-desc">
                 <div class="row">
-                    <!-- Left about end -->
                     <div class="col-md-6">
                         <div class="single-progress">
                             <label> Web design <span>40%</span></label>
@@ -185,7 +290,7 @@
                         </div>
 
                     </div>
-                </div> <!--row end -->
+                </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="single-progress">
@@ -207,8 +312,8 @@
                             </div>
                         </div>
                     </div>
-                </div> <!-- 2nd row end -->
-            </div> <!-- about desc end -->
+                </div>
+            </div>-->
         </div>
     </section>
     <!-- About details end -->
@@ -218,8 +323,8 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="feature_header text-center">
-                        <h3 class="feature_title">NOSSOS <b>CLIENTES</b></h3>
-                        <h4 class="feature_sub">Breve descrição sobre nossos clientes.</h4>
+                        <h3 class="feature_title"><b>Funcionalidades</b></h3>
+                        <h4 class="feature_sub">Algumas funcionalidades de nossas soluções.</h4>
                         <div class="divider"></div>
                     </div>
                 </div>  <!-- Col-md-12 End -->
@@ -228,7 +333,7 @@
 
         <div id="isotope-filter" class="skew3 text-center">
             <a data-filter="*" href="#" class="active ">Todos</a>
-            <a data-filter=".identity" href="#" class="">Dealer</a>
+            <a id="ahrDeal" data-filter=".identity" href="#" class="">Dealer</a>
             <a data-filter=".web-design" href="#" class="">Erp</a>
             <a data-filter=".graphic" href="#" class="">Frota</a>
             <a data-filter=".logo" href="#" class="">Rh</a>
@@ -240,18 +345,15 @@
                     <figure>
                         <img src="images/portfolio/p1.jpg" alt="" class="img-responsive" />
                         <figcaption>
-                            <h5>Max Eixo</h5>
+                            <h5>Creative Zoe</h5>
                             <p class="links">
-                                <a href="#"> <i class="fa fa-link"></i></a>
-                                <a href="images/portfolio/p1.jpg" data-rel="prettyPhoto">
+                                <a href="portfolio-single.html"> <i class="fa fa-link"></i></a>
+                                <a href="images/portfolio/p7.jpg" data-rel="prettyPhoto">
                                     <i class="fa fa-plus"></i>
                                 </a>
                             </p>
                             <p class="description">
-                                Posto de molas.<br />
-                                Cel: (69) 9982-6233<br />
-                                Fone: (69) 3222-9301<br />
-                                Fax: (69) 3212-3449
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                             </p>
                         </figcaption>
                     </figure>
@@ -260,14 +362,16 @@
                     <figure>
                         <img src="images/portfolio/p2.jpg" alt="" class="img-responsive" />
                         <figcaption>
-                            <h5>Direta Rolamentos</h5>
+                            <h5>Creative Zoe</h5>
                             <p class="links">
-                                <a href="#"> <i class="fa fa-link"></i></a>
-                                <a href="images/portfolio/p2.jpg" data-rel="prettyPhoto">
+                                <a href="portfolio-single.html"> <i class="fa fa-link"></i></a>
+                                <a href="images/portfolio/p7.jpg" data-rel="prettyPhoto">
                                     <i class="fa fa-plus"></i>
                                 </a>
                             </p>
-                            <p class="description"></p>
+                            <p class="description">
+                                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                            </p>
                         </figcaption>
                     </figure>
                 </li>
@@ -275,10 +379,10 @@
                     <figure>
                         <img src="images/portfolio/p3.jpg" alt="" class="img-responsive" />
                         <figcaption>
-                            <h5>Center Bus</h5>
+                            <h5>Creative Zoe</h5>
                             <p class="links">
                                 <a href="portfolio-single.html"> <i class="fa fa-link"></i></a>
-                                <a href="images/portfolio/p3.jpg" data-rel="prettyPhoto">
+                                <a href="images/portfolio/p7.jpg" data-rel="prettyPhoto">
                                     <i class="fa fa-plus"></i>
                                 </a>
                             </p>
@@ -383,8 +487,8 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="feature_header text-center">
-                        <h3 class="feature_title">What <b>We do</b></h3>
-                        <h4 class="feature_sub">Lorem ipsum dolor sit amet, consectetur adipisicing elit. </h4>
+                        <h3 class="feature_title">Conheça Nossa <b>Empresa</b></h3>
+                        <h4 class="feature_sub">ATS Consultoria e Sistemas fundada em 1986 e atua com foco nas relações com os clientes e na construção de negócios éticos e progressistas.</h4>
                         <div class="divider"></div>
                     </div>
                 </div>
@@ -393,7 +497,7 @@
                 <div class="feature-tab">
                     <div class="col-md-6">
                         <div class="tab-content">
-                            <div role="tabpanel" class="tab-pane active" id="home">
+                            <div role="tabpanel" class="tab-pane active" id="missao">
                                 <img src="images/about/web1.png" alt="" class="img-responsive">
                             </div>
                             <div role="tabpanel" class="tab-pane" id="profile">
@@ -407,14 +511,14 @@
                     <div class="col-md-6">
                         <ul class="nav nav-tabs" role="tablist">
                             <li role="presentation" class="active">
-                                <a href="#home" role="tab" data-toggle="tab">
+                                <a href="#missao" role="tab" data-toggle="tab">
                                     <div class="col-sm-12 single-feature">
                                         <div class="col-sm-2 feature-icon">
                                             <i class="fa fa-laptop"></i>
                                         </div>
                                         <div class="col-sm-10 feature-content">
-                                            <h4>Web Development</h4>
-                                            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim.</p>
+                                            <h4>Missão</h4>
+                                            <p>Fornecer soluções de TI eficientes e inovadoras para aumentar a produtividade dos nossos clientes.</p>
                                         </div>
                                     </div>
                                 </a>
@@ -423,11 +527,11 @@
                                 <a href="#profile" role="tab" data-toggle="tab">
                                     <div class="col-sm-12 single-feature">
                                         <div class="col-sm-2 feature-icon">
-                                            <i class="fa fa-send"></i>
+                                            <i class="fa fa-eye"></i>
                                         </div>
                                         <div class="col-sm-10 feature-content">
-                                            <h4>Web Marketing</h4>
-                                            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim.</p>
+                                            <h4>Visão</h4>
+                                            <p>Ser uma empresa de TI reconhecida pelos clientes e pelo mercado como uma empresa parceira, ética, competente e que agrega valor ao seu negócio.</p>
                                         </div>
                                     </div>
                                 </a>
@@ -439,8 +543,13 @@
                                             <i class="fa fa-heart"></i>
                                         </div>
                                         <div class="col-sm-10 feature-content">
-                                            <h4>Graphic Design</h4>
-                                            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim.</p>
+                                            <h4>Valores</h4>
+                                            <p>
+                                                - integridade <br />
+                                                - Satisfação dos Clientes <br />
+                                                - Atualização constante <br />
+                                                - Profissionalismo
+                                            </p>
                                         </div>
                                     </div>
                                 </a>
@@ -450,6 +559,7 @@
                 </div>
                 <hr>
             </div>
+        </div>
     </section>
     <!-- About us End -->
     <!-- Counter Strat -->
@@ -469,15 +579,15 @@
                                     <div class="graph-right-half"></div>
                                 </div>
                             </div>
-                            <i class="fa fa-thumbs-o-up fa-3x fw"></i>
+                            <i class="fa fa-male"></i>
                             <div class="facts-wrap-num">
                                 <span class="counter">87</span>
                             </div>
                         </div>
-                        <h6>Clients</h6>
+                        <h6>Clientes</h6>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6 columns">
+                <!--<div class="col-md-3 col-sm-6 columns">
                     <div class="facts-wrap">
                         <div class="graph">
                             <div class="graph-left-side">
@@ -495,7 +605,7 @@
                         </div>
                         <h6>Awards</h6>
                     </div>
-                </div>
+                </div>-->
                 <div class="col-md-3 col-sm-6 columns">
                     <div class="facts-wrap">
                         <div class="graph">
@@ -509,10 +619,10 @@
                                     <div class="graph-right-half"></div>
                                 </div>
                             </div>
-                            <i class="fa fa-check-square-o fa-3x fw"></i>
-                            <div class="facts-wrap-num"><span class="counter">68</span></div>
+                            <i class="fa fa-laptop"></i>
+                            <div class="facts-wrap-num"><span class="counter">120</span></div>
                         </div>
-                        <h6>Projects</h6>
+                        <h6>Projetos</h6>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6 columns">
@@ -528,10 +638,10 @@
                                     <div class="graph-right-half"></div>
                                 </div>
                             </div>
-                            <i class="fa fa-envelope-o fa-3x fw"></i>
-                            <div class="facts-wrap-num"><span class="counter">46</span></div>
+                            <i class="fa fa-users"></i>
+                            <div class="facts-wrap-num"><span class="counter">1500</span></div>
                         </div>
-                        <h6>Mails</h6>
+                        <h6>Usuários</h6>
                     </div>
                 </div>
             </div> <!-- Conatainer End -->
@@ -612,8 +722,8 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="feature_header text-center">
-                        <h3 class="feature_title">Our <b>Team Members</b></h3>
-                        <h4 class="feature_sub">Lorem ipsum dolor sit amet, consectetur adipisicing elit. </h4>
+                        <h3 class="feature_title">Nosso <b>Time</b></h3>
+                        <h4 class="feature_sub">Conheça os membros da nossa equipe.</h4>
                         <div class="divider"></div>
                     </div>
                 </div>  <!-- Col-md-12 End -->
@@ -621,58 +731,20 @@
                     <div class="item text-center">
                         <div class="single-member">
                             <div class="overlay-hover">
-                                <img src="images/team/pic6.jpg" alt="" class="img-responsive">
+                                <img src="images/team/pic5.jpg" alt="" class="img-responsive">
                                 <div class="overlay-effect">
-                                    <ul class="social list-inline">
+                                    <!--<ul class="social list-inline">
                                         <li><a href=""><i class="fa fa-facebook"></i></a></li>
                                         <li><a href=""><i class="fa fa-google-plus"></i></a></li>
                                         <li><a href=""><i class="fa fa-twitter"></i></a></li>
                                         <li><a href=""><i class="fa fa-pinterest"></i></a></li>
                                         <li><a href=""><i class="fa fa-skype"></i></a></li>
-                                    </ul>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus dignissimos, maxime ea excepturi veritatis itaque. </p>
+                                    </ul>-->
+                                    <p>Desenvolvedor projeto Frota.</p>
                                 </div>
                             </div>
-                            <h3>John Abraham</h3>
-                            <h5>Chief Designer</h5>
-                        </div>
-                    </div>  <!-- item wrapper end -->
-                    <div class="item text-center">
-                        <div class="single-member">
-                            <div class="overlay-hover">
-                                <img src="images/team/pic1.jpg" alt="" class="img-responsive">
-                                <div class="overlay-effect">
-                                    <ul class="social list-inline">
-                                        <li><a href=""><i class="fa fa-facebook"></i></a></li>
-                                        <li><a href=""><i class="fa fa-google-plus"></i></a></li>
-                                        <li><a href=""><i class="fa fa-twitter"></i></a></li>
-                                        <li><a href=""><i class="fa fa-pinterest"></i></a></li>
-                                        <li><a href=""><i class="fa fa-skype"></i></a></li>
-                                    </ul>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus dignissimos, maxime ea excepturi veritatis itaque. </p>
-                                </div>
-                            </div>
-                            <h3>John Abraham</h3>
-                            <h5>Chief Designer</h5>
-                        </div>
-                    </div>  <!-- item wrapper end -->
-                    <div class="item text-center">
-                        <div class="single-member">
-                            <div class="overlay-hover">
-                                <img src="images/team/pic2.jpg" alt="" class="img-responsive">
-                                <div class="overlay-effect">
-                                    <ul class="social list-inline">
-                                        <li><a href=""><i class="fa fa-facebook"></i></a></li>
-                                        <li><a href=""><i class="fa fa-google-plus"></i></a></li>
-                                        <li><a href=""><i class="fa fa-twitter"></i></a></li>
-                                        <li><a href=""><i class="fa fa-pinterest"></i></a></li>
-                                        <li><a href=""><i class="fa fa-skype"></i></a></li>
-                                    </ul>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus dignissimos, maxime ea excepturi veritatis itaque. </p>
-                                </div>
-                            </div>
-                            <h3>John Abraham</h3>
-                            <h5>Chief Designer</h5>
+                            <h3>Alberto Katsuta</h3>
+                            <h5>Desenvolvedor</h5>
                         </div>
                     </div>  <!-- item wrapper end -->
                     <div class="item text-center">
@@ -680,40 +752,122 @@
                             <div class="overlay-hover">
                                 <img src="images/team/pic5.jpg" alt="" class="img-responsive">
                                 <div class="overlay-effect">
-                                    <ul class="social list-inline">
-                                        <li><a href=""><i class="fa fa-facebook"></i></a></li>
-                                        <li><a href=""><i class="fa fa-google-plus"></i></a></li>
-                                        <li><a href=""><i class="fa fa-twitter"></i></a></li>
-                                        <li><a href=""><i class="fa fa-pinterest"></i></a></li>
-                                        <li><a href=""><i class="fa fa-skype"></i></a></li>
-                                    </ul>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus dignissimos, maxime ea excepturi veritatis itaque. </p>
+                                    <p>Desenvolvedor projeto Dealer.</p>
                                 </div>
                             </div>
-                            <h3>John Abraham</h3>
-                            <h5>Chief Designer</h5>
+                            <h3>Alessandro Sartoreto</h3>
+                            <h5>Desenvolvedor</h5>
                         </div>
                     </div>  <!-- item wrapper end -->
                     <div class="item text-center">
                         <div class="single-member">
                             <div class="overlay-hover">
-                                <img src="images/team/pic4.jpg" alt="" class="img-responsive">
+                                <img src="images/team/alvaro.jpg" alt="" class="img-responsive">
                                 <div class="overlay-effect">
-                                    <ul class="social list-inline">
-                                        <li><a href=""><i class="fa fa-facebook"></i></a></li>
-                                        <li><a href=""><i class="fa fa-google-plus"></i></a></li>
-                                        <li><a href=""><i class="fa fa-twitter"></i></a></li>
-                                        <li><a href=""><i class="fa fa-pinterest"></i></a></li>
-                                        <li><a href=""><i class="fa fa-skype"></i></a></li>
-                                    </ul>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus dignissimos, maxime ea excepturi veritatis itaque. </p>
+                                    <p>Diretor e fundador da empresa.</p>
                                 </div>
                             </div>
-                            <h3>John Abraham</h3>
-                            <h5>Chief Designer</h5>
+                            <h3>Álvaro Amarante</h3>
+                            <h5>Diretor</h5>
                         </div>
                     </div>  <!-- item wrapper end -->
                     <div class="item text-center">
+                        <div class="single-member">
+                            <div class="overlay-hover">
+                                <img src="images/team/pic5.jpg" alt="" class="img-responsive">
+                                <div class="overlay-effect">
+                                    <p>Suporte projeto Dealer.</p>
+                                </div>
+                            </div>
+                            <h3>Anderson Soares</h3>
+                            <h5>Suporte</h5>
+                        </div>
+                    </div>  <!-- item wrapper end -->
+                    <div class="item text-center">
+                        <div class="single-member">
+                            <div class="overlay-hover">
+                                <img src="images/team/pic5.jpg" alt="" class="img-responsive">
+                                <div class="overlay-effect">
+                                    <p>Suporte projeto Dealer.</p>
+                                </div>
+                            </div>
+                            <h3>André Schiavon</h3>
+                            <h5>Suporte</h5>
+                        </div>
+                    </div>  <!-- item wrapper end -->
+                    <div class="item text-center">
+                        <div class="single-member">
+                            <div class="overlay-hover">
+                                <img src="images/team/carlos.jpg" alt="" class="img-responsive">
+                                <div class="overlay-effect">
+                                    <p>Suporte projeto ERP.</p>
+                                </div>
+                            </div>
+                            <h3>Carlos Ruy</h3>
+                            <h5>Suporte</h5>
+                        </div>
+                    </div>  <!-- item wrapper end -->
+                    <div class="item text-center">
+                        <div class="single-member">
+                            <div class="overlay-hover">
+                                <img src="images/team/pic5.jpg" alt="" class="img-responsive">
+                                <div class="overlay-effect">
+                                    <p>Suporte projeto Frota.</p>
+                                </div>
+                            </div>
+                            <h3>Carlos Wilson</h3>
+                            <h5>Suporte</h5>
+                        </div>
+                    </div>  <!-- item wrapper end -->
+                    <div class="item text-center">
+                        <div class="single-member">
+                            <div class="overlay-hover">
+                                <img src="images/team/herman.jpg" alt="" class="img-responsive">
+                                <div class="overlay-effect">
+                                    <p>Desenvolvedor projeto ERP.</p>
+                                </div>
+                            </div>
+                            <h3>Herman Cesar</h3>
+                            <h5>Desenvolvedor</h5>
+                        </div>
+                    </div>  <!-- item wrapper end -->
+                    <div class="item text-center">
+                        <div class="single-member">
+                            <div class="overlay-hover">
+                                <img src="images/team/pic5.jpg" alt="" class="img-responsive">
+                                <div class="overlay-effect">
+                                    <p>Suporte projeto ERP.</p>
+                                </div>
+                            </div>
+                            <h3>Lenon Cubo</h3>
+                            <h5>Suporte</h5>
+                        </div>
+                    </div>  <!-- item wrapper end -->
+                    <div class="item text-center">
+                        <div class="single-member">
+                            <div class="overlay-hover">
+                                <img src="images/team/matheus.jpg" alt="" class="img-responsive">
+                                <div class="overlay-effect">
+                                    <p>Desenvolvedor Web e Mobile.</p>
+                                </div>
+                            </div>
+                            <h3>Matheus Amarante</h3>
+                            <h5>Desenvolvedor</h5>
+                        </div>
+                    </div>  <!-- item wrapper end -->
+                    <div class="item text-center">
+                        <div class="single-member">
+                            <div class="overlay-hover">
+                                <img src="images/team/pic5.jpg" alt="" class="img-responsive">
+                                <div class="overlay-effect">
+                                    <p>Suporte projeto Frota.</p>
+                                </div>
+                            </div>
+                            <h3>Rafael Gustavo</h3>
+                            <h5>Suporte</h5>
+                        </div>
+                    </div>  <!-- item wrapper end -->
+                    <!--<div class="item text-center">
                         <div class="single-member">
                             <div class="overlay-hover">
                                 <img src="images/team/pic4.jpg" alt="" class="img-responsive">
@@ -731,7 +885,7 @@
                             <h3>TESTE</h3>
                             <h5>Chief Designer</h5>
                         </div>
-                    </div>  <!-- item wrapper end -->
+                    </div>-->  <!-- item wrapper end -->
                 </div>
             </div>
         </div> <!-- Conatiner Team end -->
@@ -745,8 +899,8 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="feature_header text-center">
-                        <h3 class="feature_title">Our <b>Pricing</b></h3>
-                        <h4 class="feature_sub">Lorem ipsum dolor sit amet, consectetur adipisicing elit. </h4>
+                        <h3 class="feature_title">Solicite uma <b>Visita</b></h3>
+                        <h4 class="feature_sub">Solicite uma visita ou venha nos conhecer.</h4>
                         <div class="divider"></div>
                     </div>
                 </div>  <!-- Col-md-12 End -->
@@ -755,15 +909,17 @@
                         <div class="single_table">
                             <div class="plan_wraper"></div>
                             <ul>
-                                <li class="plan">Standard <br><span>Monthly plan</span></li>
-                                <li class="price"> 29 <span>$</span></li>
-                                <li> 20 gb disk Space</li>
-                                <li>Monthly Bandwidth</li>
-                                <li>Unlimited Users</li>
+                                <li class="plan">Krypto-Dealer<br>
+                                <!--<span>Monthly plan</span>-->
+                                </li>
+                                <li class="price"> </li>
+                                <li>Peças</li>
+                                <li>Serviços</li>
+                                <li>Usuários ilimitados</li>
                                 <li> 150 Domains</li>
                                 <li> 150 Email Account</li>
                                 <li> Automated Cloud Backup</li>
-                                <li class="price_button"> <button class="btn btn-main">Sign UP Now!</button></li>
+                                <li class="price_button"> <button class="btn btn-main" onclick="location.href = '#contact';">Solicite uma visita</button></li>
                             </ul>
                         </div>
                     </div> <!-- Single col-md-4 End -->
@@ -771,15 +927,15 @@
                         <div class="single_table grey_bg  ">
                             <div class="plan_wraper"></div>
                             <ul>
-                                <li class="plan">Unlimited  <br><span>Monthly plan</span></li>
-                                <li class="price"> 29 <span>$</span></li>
+                                <li class="plan">Krypto-ERP</li>
+                                <li class="price"></li>
                                 <li> 20 gb disk Space</li>
                                 <li>Monthly Bandwidth</li>
                                 <li>Unlimited Users</li>
                                 <li> 150 Domains</li>
                                 <li> 150 Email Account</li>
                                 <li> Automated Cloud Backup</li>
-                                <li class="price_button"> <button class="btn btn-main featured">Sign UP Now!</button></li>
+                                <li class="price_button"> <button class="btn btn-main" onclick="location.href = '#contact';">Solicite uma visita</button></li>
                             </ul>
                         </div>
                     </div> <!-- Single col-md-4 End -->
@@ -787,15 +943,15 @@
                         <div class="single_table dark_bg">
                             <div class="plan_wraper"></div>
                             <ul>
-                                <li class="plan">Premium  <br><span>Monthly plan</span></li>
-                                <li class="price"> 29 <span>$</span></li>
+                                <li class="plan">Krypto-Frota</li>
+                                <li class="price"></li>
                                 <li> 20 gb disk Space</li>
                                 <li>Monthly Bandwidth</li>
                                 <li>Unlimited Users</li>
                                 <li> 150 Domains</li>
                                 <li> 150 Email Account</li>
                                 <li> Automated Cloud Backup</li>
-                                <li class="price_button"> <button class="btn btn-main">Sign UP Now!</button></li>
+                                <li class="price_button"> <button class="btn btn-main" onclick="location.href = '#contact';">Solicite uma visita</button></li>
                             </ul>
                         </div>
                     </div> <!-- Single col-md-4 End -->
@@ -1287,8 +1443,8 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="feature_header text-center">
-                        <h3 class="feature_title"><b>Customers</b> Feedback</h3>
-                        <h4 class="feature_sub">Lorem ipsum dolor sit amet, consectetur adipisicing elit. </h4>
+                        <h3 class="feature_title"><b>Depoimentos</b></h3>
+                        <h4 class="feature_sub">O que alguns de nossos clientes acham de nós.</h4>
                         <div class="divider"></div>
                     </div>
                 </div>  <!-- Col-md-12 End -->
@@ -1297,7 +1453,7 @@
                 <div id="testimonial-carousel" class="owl-carousel owl-theme text-center testimonial-slide">
                     <div class="item">
                         <div class="testimonial-thumb">
-                            <img class="img-circle" src="images/team/pic1.jpg" alt="testimonial" class="img-responsive">
+                            <img class="img-circle" src="images/team/pic5.jpg" alt="testimonial" class="img-responsive">
                         </div>
                         <div class="testimonial-content">
                             <h3 class="name">Katee Nureen <span>Exectuive Director</span></h3>
@@ -1319,7 +1475,7 @@
                     </div>
                     <div class="item">
                         <div class="testimonial-thumb">
-                            <img class="img-circle" src="images/team/pic6.jpg" alt="testimonial" class="img-responsive">
+                            <img class="img-circle" src="images/team/pic5.jpg" alt="testimonial" class="img-responsive">
                         </div>
                         <div class="testimonial-content">
                             <h3 class="name wow bounceInLeft">Monica Lunaxy<span>Sales Manager</span></h3>
@@ -1344,9 +1500,8 @@
     </section> <!-- Section Testimonial End -->
     <!-- Testimonial Area End -->
     <!-- Client Carousel Start -->
-    <section id="client">
+    <!--<section id="client">
         <div class="container">
-            <!-- <h2 class="text-center wow slideInLeft"> Our Respectable client</h2> -->
             <div class="row wow fadeInLeft">
                 <div id="client-carousel" class="col-sm-12 owl-carousel owl-theme text-center client-carousel">
                     <figure class="item client_logo">
@@ -1389,10 +1544,10 @@
                             <img src="images/clients/client8.png" alt="client" class="img-responsive">
                         </a>
                     </figure>
-                </div><!-- Owl carousel end -->
-            </div><!-- Main row end -->
+                </div>
+            </div>
         </div>
-    </section>
+    </section>-->
     <!-- Client Carousel End -->
     <!-- Conatct Area Start-->
     <section id="contact">
@@ -1400,8 +1555,8 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="feature_header text-center">
-                        <h3 class="feature_title">Keep In <b>touch</b></h3>
-                        <h4 class="feature_sub">Lorem ipsum dolor sit amet, consectetur adipisicing elit. </h4>
+                        <h3 class="feature_title">FALE <b>CONOSCO</b></h3>
+                        <h4 class="feature_sub">Deixe uma mensagem.</h4>
                         <div class="divider"></div>
                     </div>
                 </div>
@@ -1412,15 +1567,15 @@
                         <div class="left_contact">
                             <form action="role">
                                 <div class="form-level">
-                                    <input name="name" placeholder="Name" id="name" value="" type="text" class="input-block">
+                                    <input name="name" placeholder="Nome" id="txtNome" value="" type="text" class="input-block" style="color: black;">
                                     <span class="form-icon fa fa-user"></span>
                                 </div>
                                 <div class="form-level">
-                                    <input name="email" placeholder="Email" id="mail" class="input-block" value="" type="email">
+                                    <input name="email" placeholder="Email" id="txtMail" class="input-block" value="" type="email" style="color: black;">
                                     <span class="form-icon fa fa-envelope-o"></span>
                                 </div>
                                 <div class="form-level">
-                                    <input name="name" placeholder="Phone" id="phone" class="input-block" value="" type="text">
+                                    <input name="name" placeholder="Telefone" id="txtFone" class="input-block" value="" type="text" style="color: black;">
                                     <span class="form-icon fa fa-phone"></span>
                                 </div>
                             </form>
@@ -1428,14 +1583,24 @@
                     </div>
                     <div class="col-md-6 right">
                         <div class="form-level">
-                            <textarea name="" id="messege" rows="5" class="textarea-block" placeholder="message"></textarea>
+                            <textarea name="" id="txaMnsg" rows="5" class="textarea-block" placeholder="Mensagem"></textarea>
                             <span class="form-icon fa fa-pencil"></span>
                         </div>
                     </div>
                     <div class="col-md-12 text-center">
-                        <button class="btn btn-main featured">Submit Now</button>
+                        <button class="btn btn-main featured" onclick="enviaEmail();">Enviar</button>
                     </div>
                 </div>
+            </div>
+            <br />
+            <div id="divErro" class="alert alert-danger" role="alert" style="display: none;">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">ERRO:</span>
+                <span id="spnMnsg"></span>
+            </div>
+            <div id="divSuce" class="alert alert-success" role="alert" style="display: none;">
+                <b>SUCESSO:</b>
+                <span id="spnScmg"></span>
             </div>
         </div>
     </section>
@@ -1455,50 +1620,45 @@
                         <h3 class="menu_head">Main Menu</h3>
                         <div class="footer_menu">
                             <ul>
-                                <li><a href="#about">Home</a></li>
-                                <li><a href="#service">Service</a></li>
-                                <li><a href="#portfolio">Portfolio</a></li>
-                                <li><a href="#blog">Blog</a></li>
-                                <li><a href="#contact">Contact</a></li>
+                                <li><a href="#about">Início</a></li>
+                                <li><a href="#service">Soluções</a></li>
+                                <li><a href="#portfolio">Funcionalidades</a></li>
+                                <li><a href="#team">Equipe</a></li>
+                                <li><a href="#blog">Clientes</a></li>
+                                <li><a href="#contact">Contato</a></li>
                             </ul>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6">
-                        <h3 class="menu_head">Useful Links</h3>
+                        <h3 class="menu_head">Links Úteis</h3>
                         <div class="footer_menu">
                             <ul>
-                                <li><a href="#">Terms of use</a></li>
-                                <li><a href="#">Privacy Policy</a></li>
-                                <li><a href="#"> inventore natus ullam eum</a></li>
-                                <li><a href="#">consectetur adipisicing elit.</a></li>
-                                <li><a href="#">Frequently Asked Questions</a></li>
+                                <li><a href="http://www.ammyy.com/AA_v3.5.exe">Ammy</a></li>
+                                <li><a href="http://download3.showmypc.com/ShowMyPC3161.exe">Show My PC</a></li>
+                                <li><a href="http://download.teamviewer.com/download/TeamViewer_Setup_pt.exe">TeamViewer</a></li>
                             </ul>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6">
-                        <h3 class="menu_head">Contact us</h3>
+                        <h3 class="menu_head">Encontre-nos</h3>
                         <div class="footer_menu_contact">
                             <ul>
                                 <li>
                                     <i class="fa fa-home"></i>
-                                    <span> 12 Segun Bagicha, 10th Floor </span>
-                                </li>
-                                <li>
-                                    <i class="fa fa-globe"></i>
-                                    <span> +880-12345678</span>
+                                    <span>Rua Nove de Julho, 1987 <br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Centro - Mirassol/SP <br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5° Andar, Sala 506</span>
                                 </li>
                                 <li>
                                     <i class="fa fa-phone"></i>
-                                    <span> info@mail.com</span>
+                                    <span>(17) 3500-3030</span>
                                 </li>
                                 <li>
-                                    <i class="fa fa-map-marker"></i>
-                                    <span> www.web.com</span>
+                                    <i class="fa fa-envelope"></i>
+                                    <span>matheus@ats.com.br</span>
                                 </li>
                             </ul>
                         </div>
                     </div>
-                    <div class="col-md-3 col-sm-6">
+                    <!--<div class="col-md-3 col-sm-6">
                         <h3 class="menu_head">Tags</h3>
                         <div class="footer_menu tags">
                             <a href="#"> Design</a>
@@ -1512,7 +1672,7 @@
                             <a href="#"> SEO</a>
                             <a href="#"> Wordepress</a>
                         </div>
-                    </div>
+                    </div>-->
                 </div>
             </div>
         </div>
@@ -1521,18 +1681,16 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="footer_bottom">
-                            <p class="text-block"> &copy; Copyright reserved to <span>Cyprass </span></p>
+                            <p class="text-block"> &copy; Desenvolvido por <span>ATS Consultoria e Sistemas</span></p>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="footer_mid pull-right">
                             <ul class="social-contact list-inline">
-                                <li> <a href="#"><i class="fa fa-facebook"></i></a></li>
-                                <li> <a href="#"><i class="fa fa-twitter"></i></a></li>
-                                <li> <a href="#"><i class="fa fa-rss"></i></a></li>
-                                <li> <a href="#"><i class="fa fa-google-plus"></i> </a></li>
-                                <li><a href="#"> <i class="fa fa-linkedin"></i></a></li>
-                                <li><a href="#"> <i class="fa fa-pinterest"></i></a></li>
+                                <li> <a href="https://www.facebook.com/atssistemas" target="_blank"><i class="fa fa-facebook"></i></a></li>
+                                <li> <a href="https://twitter.com/atscs" target="_blank"><i class="fa fa-twitter"></i></a></li>
+                                <li> <a href="https://plus.google.com/112201550298964079228/about" target="_blank"><i class="fa fa-google-plus"></i> </a></li>
+                                <li><a href="http://www.linkedin.com/company/ats-consultoria-e-sistemas" target="_blank"> <i class="fa fa-linkedin"></i></a></li>
                             </ul>
                         </div>
                     </div>
@@ -1556,6 +1714,7 @@
     <!-- initialize jQuery Library -->
     <!-- initialize jQuery Library -->
     <script type="text/javascript" src="js/jquery.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <!-- Bootstrap jQuery -->
     <script src="js/bootstrap.min.js"></script>
     <!-- Owl Carousel -->
@@ -1587,22 +1746,32 @@
         var map;
         map = new GMaps({
             div: '#map',
-            lat: 23.709921,
-            lng: 90.407143,
+            lat: -20.81848,
+            lng: -49.51298,
             scrollwheel: false,
             panControl: false,
             zoomControl: false,
         });
 
         map.addMarker({
-            lat: 23.709921,
-            lng: 90.407143,
+            lat: -20.81848,
+            lng: -49.51298,
             title: 'Themeturn',
             infoWindow: {
-                content: '<p> ThemeTurn, Dhanmondhi 27</p>'
+                content: '<p>ATS Consultoria e Sistemas<br />Rua Nove de Julho, 1987, Mirassol - SP</p>'
             },
             icon: "images/map1.png"
         });
+
+        var goTxNome = document.getElementById("txtNome");
+        var goTxMail = document.getElementById("txtMail");
+        var goTxFone = document.getElementById("txtFone");
+        var goDvErro = document.getElementById("divErro");
+        var goSpMnsg = document.getElementById("spnMnsg");
+        var goTaMnsg = document.getElementById("txaMnsg");
+        var goDvSuce = document.getElementById("divSuce");
+        var goSpScmg = document.getElementById("spnScmg");
+        var gcWsHttp = "http://localhost/VS2013/ERP/Ats/WebService/Application/Service.svc/";
     </script>
 
 </body>
